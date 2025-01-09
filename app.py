@@ -9,18 +9,16 @@ openai.api_key = 'sk-proj-T1JSZW9jaBuYbtwlGtssPxP_3GfS0omhELIBl9kV_lBY78fsLAENg7
 # Temporary storage for cases
 cases = []
 
+# Route to render the case submission form
+@app.route('/')
+def home():
+    return render_template('upload.html')
 
-@app.route('/', methods=['GET', 'POST'])
+# Route to handle case submission
+@app.route('/new-case', methods=['GET', 'POST'])
 def new_case():
     if request.method == 'POST':
-        # Process form data
-        # (Your logic to handle case input and analysis)
-        return render_template('case_list.html', case_info=case_info)
-    return render_template('new_case_form.html')  # The form to input case
-
-@app.route('/submit_case', methods=['GET', 'POST'])
-def submit_case():
-    if request.method == 'POST':
+        # Get form data
         case_name = request.form['case_name']
         client_name = request.form['client_name']
         case_type = request.form['case_type']
@@ -36,15 +34,15 @@ def submit_case():
             'date_filed': date_filed
         })
 
-        # Get GPT insights
+        # Get GPT insights based on case description
         legal_insights = get_legal_insights(description)
 
-        # Show all submitted cases with insights
+        # Display the list of cases along with insights
         return render_template('case_list.html', cases=cases, insights=legal_insights)
 
     return render_template('upload.html')
 
-
+# Function to get legal insights from GPT
 def get_legal_insights(description):
     try:
         response = openai.ChatCompletion.create(
@@ -55,13 +53,10 @@ def get_legal_insights(description):
             ],
             max_tokens=1000
         )
-        return response.choices[0].message['content'].strip()
+        return response['choices'][0]['message']['content'].strip()
     except Exception as e:
         return f"Error in GPT integration: {str(e)}"
 
-
-
-
+# Run the app
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
