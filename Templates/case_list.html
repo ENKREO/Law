@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submitted Cases</title>
+</head>
+<body>
+    <h1>All Submitted Cases</h1>
+
+    {% if cases %}
+        <ul>
+        {% for case in cases %}
+            <li>
+                <strong>Case Name:</strong> {{ case.case_name }}<br>
+                <strong>Client Name:</strong> {{ case.client_name }}<br>
+                <strong>Case Type:</strong> {{ case.case_type }}<br>
+                <strong>Description:</strong> {{ case.description }}<br>
+                <strong>Date Filed:</strong> {{ case.date_filed }}<br><br>
+                
+                <strong>Legal Insights:</strong><br>
+                <p>{{ insights }}</p>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No cases submitted yet.</p>
+    {% endif %}
+</body>
+</html>
